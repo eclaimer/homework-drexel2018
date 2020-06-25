@@ -68,6 +68,6 @@ def picture_sl_ts(ts_llist, v_llist):
 
 
 
-case = git_timestamp("v4", "linux-stable")
+case = git_timestamp("v4", "/Users/apple/Desktop/大二下/数据科学编程-杨民强/linux-stable")
 picture_sl_ts(case[0], case[1])
 
