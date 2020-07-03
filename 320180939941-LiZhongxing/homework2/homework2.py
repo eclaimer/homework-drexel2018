@@ -12,9 +12,9 @@ def get_txt(repo,ver):
     t_txt = vtime.decode('latin').encode('utf8').decode('utf8').split("\n")
     return t_txt
 
-def get_list(x):
+def get_list(repo,ver):
     t_list = []
-    for i in x:
+    for i in get_txt(repo,ver):
         data_get = 'git log -1 --pretty=format:\"%ct\" ' + str(i)
         t = Popen(data_get, cwd = repo, stdout=PIPE, stderr=DEVNULL)
         t_time, res1 = t.communicate()
@@ -22,7 +22,7 @@ def get_list(x):
         t_list.append(doc)
     return t_list
 
-def output(x, y):    
+def output(x, y, ver):    
     plt.scatter(x, y)
     plt.title('time and order')
     plt.xlabel('time')
@@ -30,7 +30,7 @@ def output(x, y):
     plt.savefig('plot%s.png' % ver)
 
 if __name__ == "__main__":
-    address = "C:\Users\dell\Documents\GitHub\linux-stable"#The address of the file linux-stable.
-    output(get_list(get_txt(address, "v4.5")), get_txt(address, "v4.5"))
+    address = "C:\\Users\\dell\\Documents\\GitHub\\linux-stable"#The address of the file linux-stable.
+    output(get_list(address, "v4.5"), get_txt(address, "v4.5"), "v4.5")
 
 
