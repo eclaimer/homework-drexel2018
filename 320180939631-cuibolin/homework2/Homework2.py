@@ -17,10 +17,11 @@ y = ver.decode('latin').encode('utf8').decode('utf8').split("\n")
 
 print(y)
 x_time = []
-for i in y:
-    cmd_time = 'git log -1 --pretty=format:\"%ct\" ' + i
-    time = Popen(cmd_time, cwd=repo, stdout=PIPE).communicate()
-    x_time.append(x_time)
+for tag in y:
+    cmd_time = 'git log -1 --pretty=format:\"%ct\" ' + tag
+    time = str(Popen(cmd_time, cwd=address, stdout=PIPE).communicate())[3:12]
+    x_time.append(cmd_time)
+
 #  print(1) a small test to show the program can run to here
 
 plt.scatter(x_time,y)
