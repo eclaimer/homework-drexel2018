@@ -25,6 +25,7 @@ import unicodedata
 import re
 import numpy as np
 import pandas as pd
+from datetime import datetime
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import MultipleLocator
 from subprocess import Popen, PIPE, DEVNULL
@@ -219,14 +220,14 @@ class Counter:
         """
         secPerDay = 3600 * 24
         x = (self.table['timestamp'] - self.table['timestamp'][0]) // secPerDay
+        #plt.scatter(self.table['timestamp'].apply(lambda x:datetime.fromtimestamp(x).weekday()), self.table['tag'])
         plt.scatter(x, self.table['tag'])
-        plt.title("")
-        plt.xlabel("")
-        plt.ylabel("")
+        plt.title("The hours over tags")
+        plt.xlabel("tags")
+        plt.ylabel("hours")
         ymajor_locator = MultipleLocator(20)
         ay = plt.gca()
         ay.yaxis.set_major_locator(ymajor_locator)
-        plt.show()
         if save_path:
             try:
                 plt.savefig(save_path)
@@ -236,11 +237,12 @@ class Counter:
             except FileNotFoundError:
                 error_log('Invalid path: No such file-----{path}'.format(path=save_path))
                 raise InvalidPathError
+        plt.show()
         plt.clf()
 
 
 if __name__ == "__main__":
-    path = "/linux-stable"
+    path = "linux-stable"
     counter = Counter(path, version='v4.4')
     print(counter.table)
     counter.table.to_csv('v4.4.csv',index=False)
