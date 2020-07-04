@@ -5,61 +5,60 @@ __license__ = "GPL V2"
 __author__ = "Cao Yuxuan"
 __version = '1.0'
 
-
 import re
 import pandas as pd
-import time
-from subprocess import Popen, PIPE, DEVNULL
-import unicodedata
-import matplotlib.pyplot as plt
 import numpy as np
+import time
+import unicodedata
+from subprocess import  PIPE, DEVNULL, Popen
+import matplotlib.pyplot as plt
 
 
 
-def get_list(kernels, repo):  #get the list of times in a kernel
-    total_time_stamp_list = []
+def collect(kernels, allversion):  #get the list of times in a kernel
+    resultlist = []
 
     for version in kernels:
         cmd = 'git tag | grep {} | sort -n -k3 -t"."'.format(version)
-        p = Popen(cmd, cwd=repo, stdout=PIPE, shell=True)
+        p = Popen(cmd, cwd=allversion, stdout=PIPE, shell=True)
         data, res = p.communicate()
         data = data.decode('latin').encode('utf8').decode('utf8').split("\n")
-        time_stamp_list = []
+        Timestamp_list = []
 
-        for v in data:
-            cmd_1 = 'git log -1 --pretty=format:"%ct" {}'.format(v)
-            p = Popen(cmd_1, cwd=repo, stdout=PIPE, shell=True)
-            time_stamp, res = p.communicate()
-            time_stamp = int(time_stamp.decode('latin').encode('utf8').decode('utf8'))
-            # time_stamp=("%e" %int(time_stamp))
-            # value=time.mktime(time.strptime(time_stamp,'%Y-%m-%d %H:%M:%S'))
-            time_stamp_list.append(time_stamp)
+        for i in data:
+            cmd_1 = 'git log -1 --pretty=format:"%ct" {}'.format(i)
+            p = Popen(cmd_1, cwd=allversion, stdout=PIPE, shell=True)
+            Timestamp, res = p.communicate()
+            Timestamp = int(Timestamp.decode('latin').encode('utf8').decode('utf8'))
+            # the shape of time should be time.mktime(time.strptime(Timestamp,'%Y-%m-%d %H:%M:%S'))
+            Timestamp_list.append(Timestamp)
 
-        total_time_stamp_list.append(time_stamp_list)
+        resultlist.append(Timestamp_list)
 
-    print(total_time_stamp_list)
+    print(resultlist)
 
-    return (total_time_stamp_list)
+    return (resultlist)
 
 
-def make_picture(all_time_stamp_list):  #make the picture and show it
-    count_value = 0
-    for i in all_time_stamp_list:
+def makeimg(all_Timestamp_list):  #make the picture and show it
+    count = 0
+    for i in all_Timestamp_list:
         j = []
         for a in range(len(i)):
-            j.append(count_value)
-        count_value = count_value + 1
+            j.append(count)
+        count = count + 1
         # plt.scatter(i,j)
         plt.xlim(1.42e+09, 1.49e+09)
         # plt.ylim(0,10)
         plt.xlabel('seconds')
-        plt.ylabel('patchlevel')
+        plt.ylabel('kernel——versions')
         plt.scatter(i, j)
         plt.title ('timestamps')
     plt.show()
 
 
-repo = '/Users/tsaoyuxuan/linux-stable'
-versions = ['v4.1', 'v4.2', 'v4.3', 'v4.4', 'v4.5', 'v4.6', 'v4.7', 'v4.8', 'v4.9']
-total_time_stamp_list = get_list(versions, repo)
-make_picture(total_time_stamp_list)
+allversion = '/Users/tsaoyuxuan/linux-stable'
+versions = ['v4.2', 'v4.3', 'v4.4', 'v4.5', 'v4.6', 'v4.7', 'v4.8']
+resultlist = collect(versions, allversion)
+makeimg(resultlist)
+
