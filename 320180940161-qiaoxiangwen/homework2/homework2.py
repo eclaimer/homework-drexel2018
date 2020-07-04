@@ -23,7 +23,7 @@ def analyst(kernels, repo):
 
         for v in data:
             cmd_1 = 'git log -1 --pretty=format:"%ct" {}'.format(v)
-            Stamp, res = Popen(cmd_1, cwd=repo, stdout=PIPE, shell=True).communicate()
+            Stamp, res = Popen(cmd_1, cwd=repo, stdout=PIPE, shell=1).communicate()
             Stamp = int(Stamp.decode('latin').encode('utf8').decode('utf8'))
             TimeLine.append(Stamp)
         Result.append(TimeLine)
