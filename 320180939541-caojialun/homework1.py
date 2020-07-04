@@ -8,8 +8,7 @@ __sid__ = "320180939541"
 __date__ = "3/19/2020"
 __email__ = "caojl2018@lzu.edu.cn"
 
-import os, re, sys
-from datetime import datetime as dt
+import re, sys
 from subprocess import Popen, PIPE, DEVNULL
 
 class get_dates_commit():
@@ -30,7 +29,7 @@ class get_dates_commit():
         git_tag_date = Popen(['ubuntu',gittag],cwd=self.repository,stdout=PIPE,stderr=DEVNULL,shell=True)
         seconds = git_tag_date.communicate()[0]
         gittag1 = "git log -1 --pretty=format:\"%ct\" " + self.rev1
-        git_tag_date1 = Popen(['ubuntu',gittag],cwd=self.repository,stdout=PIPE,stderr=DEVNULL,shell=True)
+        git_tag_date1 = Popen(['ubuntu',gittag1],cwd=self.repository,stdout=PIPE,stderr=DEVNULL,shell=True)
         seconds1 = int(git_tag_date1.communicate()[0])
         secperhour = 3600
         return (seconds1-seconds)//secperhour
