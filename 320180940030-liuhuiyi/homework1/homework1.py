@@ -42,7 +42,6 @@ __status__ = "Experimental"
 import os, re, time
 from argparse import ArgumentParser
 from pandas import DataFrame
-from matplotlib import pyplot
 from subprocess import Popen, PIPE, DEVNULL
 from subprocess import CalledProcessError, TimeoutExpired
 
@@ -62,6 +61,7 @@ def write_log(msg):
     Args:
         msg: Error message
     """
+    print(msg)
     with open('errors.log', 'a+') as f:
         f.write(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + ' : ' + msg + '\n')
 
@@ -106,7 +106,6 @@ class Counter:
         try:
             assert int(self.max) >= self.rev_range
         except AssertionError:
-            print("Invalid Reversion Range", "Max rev %s" % self.max)
             write_log('Invalid Reversion Range: %s' % self.max)
             raise InvalidRangeError
         # Extract the time of the base commit from git
@@ -181,7 +180,6 @@ class Rep:
         try:
             assert os.path.exists(os.path.join(self.path, '.git')), True
         except AssertionError:
-            print('Invalid Git Repository')
             write_log('Invalid Git Repository: %s' % self.path)
             raise InvalidPathError from None
 
@@ -194,7 +192,6 @@ class Rep:
         try:
             outs, errs = p.communicate(timeout=100)
             if p.returncode:
-                print('Invalid Reversion')
                 write_log('Invalid Reversion: %s' % cmd)
                 raise CalledProcessError(p.returncode, cmd) from None
         except TimeoutExpired:
