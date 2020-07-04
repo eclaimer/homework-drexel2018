@@ -41,9 +41,11 @@ __status__ = "Experimental"
 
 import os, re, time
 from argparse import ArgumentParser
+from pandas import DataFrame
+from matplotlib import pyplot
 from subprocess import Popen, PIPE, DEVNULL
 from subprocess import CalledProcessError, TimeoutExpired
-from pandas import DataFrame
+
 
 
 class InvalidRevError(Exception):
@@ -72,7 +74,7 @@ def getArg():
         args: A dict storing arguments
     """
     parser = ArgumentParser(description="Count the commit")
-    parser.add_argument('-p', '--path', metavar='DIR', default='../linux/', help='path to Git Repository')
+    parser.add_argument('-p', '--path', metavar='DIR', default='F:\\LZU&DC\\项目\\课程项目\\2020数据科学编程\\groupwork18\\FinalProject\\extractor\\linux-stable\\', help='path to Git Repository')
     parser.add_argument('-r', '--rev', type=str, default='v4.4', help='First Reversion')
     parser.add_argument('-b', '--base', type=str, default='v4.4', help='Base Reversion')  # Not sure to do that
     parser.add_argument('-g', '--rev-range', type=int, default=10, help='Range of Reversion')
@@ -208,3 +210,4 @@ if __name__ == "__main__":
     title, result = r.run()
     print(title)
     print(result)
+    result.to_csv('v4.4.csv')
