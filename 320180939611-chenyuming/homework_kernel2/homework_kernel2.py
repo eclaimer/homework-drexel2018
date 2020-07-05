@@ -222,9 +222,9 @@ class Counter:
         x = (self.table['timestamp'] - self.table['timestamp'][0]) // secPerDay
         #plt.scatter(self.table['timestamp'].apply(lambda x:datetime.fromtimestamp(x).weekday()), self.table['tag'])
         plt.scatter(x, self.table['tag'])
-        plt.title("The hours over tags")
-        plt.xlabel("tags")
-        plt.ylabel("hours")
+        plt.title("the number of tags per version")
+        plt.xlabel("days")
+        plt.ylabel("tags")
         ymajor_locator = MultipleLocator(20)
         ay = plt.gca()
         ay.yaxis.set_major_locator(ymajor_locator)
@@ -242,7 +242,7 @@ class Counter:
 
 
 if __name__ == "__main__":
-    path = "linux-stable"
+    path = r"F:\LZU&DC\项目\课程项目\2020数据科学编程\groupwork18\FinalProject\extractor\linux-stable"
     counter = Counter(path, version='v4.4')
     print(counter.table)
     counter.table.to_csv('v4.4.csv',index=False)
