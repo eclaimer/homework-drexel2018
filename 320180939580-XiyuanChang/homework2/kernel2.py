@@ -1,81 +1,59 @@
 '''
-This file is to draw the scatter about timestamp vs tags. X: timestamp, Y:tag
+This file is to draw the scatter about timestamp vs tags (range: v4.x). X: timestamp, Y:tag
 __license__ = "GPL V2"
 __author__ = "Xiyuan Chang     Lanzhou University"
-__version = '1.0'
+__version = '2.0'
 __email__='xychang2018@lzu.edu.cn'
 '''
-
 from subprocess import Popen, PIPE, check_output,DEVNULL
 import matplotlib.pyplot as plt
 import re
 
-def get_tags(repo):
-    tagl=set()
-    """Query 'git tag' in linux-stable, and get releases of [v2.6.1, v2.6.2...]"""
-    cmd_tag=['git','tag']
-    p = Popen(cmd_tag, stdout=PIPE, stderr=DEVNULL, shell=True, cwd=repo)
-    data_releases, res = p.communicate()
-    releases = [release for release in data_releases.decode("utf-8").split("\n") if release]
+
+def get_tags(repo,version):
+    for ver in version:
+        cmd_tag = 'git tag | grep {} | sort -n -k3 -t"."'.format(version)
+        p = Popen(cmd_tag, stdout=PIPE, stderr=DEVNULL, shell=True, cwd=repo)
+        data_releases, res = p.communicate()
+        releases = [release for release in data_releases.decode("utf-8").split("\n") if release]
     return sorted(releases)
 
-
-
-def get_time(repo):
-    releases=get_tags(repo)
-    timestamp={}
+def get_time(repo,version):
+    releases=get_tags(repo,version)
+    totaltime=[]
+    timestamp=[]
     for v in releases:
         cmd=['git','log','-1','--pretty=format:"%ct"',v]
+        #cmd='git log -1 --pretty=format:"%ct" {}'.format(v)
         p = Popen(cmd, stdout=PIPE, stderr=DEVNULL, shell=True, cwd=repo)
         data_time,res=p.communicate()
         for times in data_time.decode("utf-8").split("\n"):
             if times =='':
                 del times
             else:
-                timestamp[v]=int(times.replace('"',''))
-    return timestamp
+                timestamp.append(int(times.replace('"','')))
+               
+        totaltime.append(timestamp)
+    return totaltime
 
-def spli(dic):#split tag v = ['v3.2.1-rc1','v3.2.6','v3.7.1-rc2'] -->[['v3', '2', '1-rc1'], ['v3', '2', '6'], ['v3', '7', '1-rc2']]
-	l=[]
-	for i in dic:
-		k=i.split('-')[0].split('.')
-		l.append(k)
-	return l
-
-
-def pro(timestamp):
-    rk = timestamp.keys()
-    sk = spli(rk)
-    val={}
-    for key in list(rk):
-        if str(key.split('-')[0].split('.')[:2]) not in val.keys():
-            tmp=[]
-            for j in sk:
-                if key.split('-')[0].split('.')[:2] == j[:2]:
-                    tmp.append(timestamp['.'.join(j)])
-            
-                    tmp.append(timestamp['.'.join(j)])
-                    val['.'.join(key.split('-')[0].split('.')[:2])] = tmp
-    sortval = {}
-    for k in sorted(val):
-        sortval[k]=val[k]
-    return sortval   
-
-
-
-
-
-
-def plot_scatter(x_times, sub_versions):
+def plat_scatter(totaltime):
     j = 0
-    for x_time in x_times:
-        y_version = [sub_versions[j] for i in range(len(x_time))]
-        plt.scatter(x_time, y_version)
+    for t in totaltime:
+        l = []
+        for k in range(len(t)):
+            l.append(j)
         j += 1
-    plt.xlabel("timestamps")
-    plt.ylabel("patch level in linux-stable")
-    plt.title("timestamps of all tags for all kernel versions")
+        plt.scatter(t,l)
+    plt.xlim(1.42e+09,1.49e+09)
+    plt.xlabel('timestamp')
+    plt.ylabel('versions')
+    plt.title('tag_vs_time')
     plt.show()
 
 
-
+if __name__ == '__main__':
+    version=['v4.0','v4.1','v4.2','v4.3','v4.4','v4.5','v4.5','v4.6','v4.7']
+    totaltime = get_time("D:/linux kernel/linux",version)
+    plat_scatter(totaltime)
+     
+    
