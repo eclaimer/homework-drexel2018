@@ -1,0 +1,22 @@
+import pandas as pd
+import csv
+from pandas.core.frame import DataFrame
+import matplotlib.pyplot as plt
+
+lst = []
+with open('data_v4.4.csv', 'r') as f:
+    reader = csv.reader(f)
+    for row in reader:
+        lst.append(row)
+df = pd.DataFrame(lst[1:], columns=lst[0])
+data = df["diff"].tolist()
+numbers = list(map(int, data))
+# We need to use the bin from 2 to 30.
+for num_bins in range(2, 31):
+    n, bins, patches = plt.hist(numbers, num_bins, density=1, facecolor='blue', alpha=0.5)
+    plt.xlabel('diff')
+    plt.ylabel('probability')
+    plt.title(r'Histogram')
+    plt.subplots_adjust(left=0.15)
+    plt.savefig("%d.png" % num_bins)
+    plt.cla()

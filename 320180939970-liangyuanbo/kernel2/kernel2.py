@@ -1,13 +1,10 @@
-from subprocess import Popen, check_output, PIPE
-import numpy as np
+from subprocess import Popen, PIPE
 import matplotlib.pyplot as plt
 import re
 
-
-def gitGetVersion(repo):
+def gitGetVersion():
     cmd = ['git', 'tag']
-    p = Popen(cmd, cwd=repo, stdout=PIPE)
-
+    p = Popen(cmd, cwd=r'linux-next\kernel', stdout=PIPE)
     data, res = p.communicate()
     d = data.decode("utf-8").split("\n")
     ini = d[1][0:4]
@@ -18,14 +15,15 @@ def gitGetVersion(repo):
             ver.append(s)
             ini = s
     ver.remove('v2.6')
-    ver.remove('v5.8')
+    #ver.remove('v5.8')
     ver.pop()
     return ver
 
 
-def gitGetDate(repo):
-    ver = gitGetVersion(repo)
 
+
+def gitGetDate(repo):
+    ver = gitGetVersion()
     time = []
     r = re.compile(r'^Date:   [0-9]+')
     for i in ver:
@@ -43,16 +41,16 @@ def gitGetDate(repo):
 def draw(list1, list2):
     x = list1
     y = list2
-    plt.xlabel('The year of version')
-    plt.ylabel('The version number')
+    plt.xlabel('date of version')
+    plt.ylabel('The number of times this version was submitted in a year')
     plt.plot(x, y)
-    plt.savefig(r'E:\个人\学习资料\Nico\res.png')
+    plt.savefig('res.png')
     plt.show()
+    
 
 if __name__ == '__main__':
-    path = r'E:\个人\学习资料\Nico\linux-stable\kernel'
-    date = gitGetDate(path)
-    version = gitGetVersion(path)
-    draw(date,version)
+    date = gitGetDate(r'linux-next\kernel')
+    version = gitGetVersion()
+    draw(date,version[1::])
 
 
