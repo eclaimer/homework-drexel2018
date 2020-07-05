@@ -222,9 +222,9 @@ class Counter:
         x = (self.table['timestamp'] - self.table['timestamp'][0]) // secPerDay
         #plt.scatter(self.table['timestamp'].apply(lambda x:datetime.fromtimestamp(x).weekday()), self.table['tag'])
         plt.scatter(x, self.table['tag'])
-        plt.title("The hours over tags")
-        plt.xlabel("tags")
-        plt.ylabel("hours")
+        plt.title("the number of tags per version")
+        plt.xlabel("days")
+        plt.ylabel("tags")
         ymajor_locator = MultipleLocator(20)
         ay = plt.gca()
         ay.yaxis.set_major_locator(ymajor_locator)
