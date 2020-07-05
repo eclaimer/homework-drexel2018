@@ -3,9 +3,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import re
 
-def gitGetVersion():
+
+def gitGetVersion(repo):
     cmd = ['git', 'tag']
-    p = Popen(cmd, cwd=r'E:\个人\学习资料\Nico\linux-stable\kernel', stdout=PIPE)
+    p = Popen(cmd, cwd=repo, stdout=PIPE)
+
     data, res = p.communicate()
     d = data.decode("utf-8").split("\n")
     ini = d[1][0:4]
@@ -21,10 +23,9 @@ def gitGetVersion():
     return ver
 
 
-
-
 def gitGetDate(repo):
-    ver = gitGetVersion()
+    ver = gitGetVersion(repo)
+
     time = []
     r = re.compile(r'^Date:   [0-9]+')
     for i in ver:
@@ -32,7 +33,6 @@ def gitGetDate(repo):
         p = Popen(cmd_time, cwd=repo, stdout=PIPE)
         data, res = p.communicate()
         da = data.decode("utf-8").split("\n")
-        times = 0
         for rec in da:
             if r.match(rec):
                 time.append(r.search(rec).group(0)[8::])
@@ -43,14 +43,16 @@ def gitGetDate(repo):
 def draw(list1, list2):
     x = list1
     y = list2
-    plt.xlabel('date of version')
-    plt.ylabel('The number of times this version was submitted in a year')
+    plt.xlabel('The year of version')
+    plt.ylabel('The version number')
     plt.plot(x, y)
+    plt.savefig(r'E:\个人\学习资料\Nico\res.png')
     plt.show()
 
 if __name__ == '__main__':
-    date = gitGetDate(r'E:\个人\学习资料\Nico\linux-stable\kernel')
-    version = gitGetVersion()
+    path = r'E:\个人\学习资料\Nico\linux-stable\kernel'
+    date = gitGetDate(path)
+    version = gitGetVersion(path)
     draw(date,version)
 
 
