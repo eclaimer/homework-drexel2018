@@ -242,7 +242,7 @@ class Counter:
 
 
 if __name__ == "__main__":
-    path = r"F:\LZU&DC\项目\课程项目\2020数据科学编程\groupwork18\FinalProject\extractor\linux-stable"
+    path = "linux-stable"
     counter = Counter(path, version='v4.4')
     print(counter.table)
     counter.table.to_csv('v4.4.csv',index=False)
