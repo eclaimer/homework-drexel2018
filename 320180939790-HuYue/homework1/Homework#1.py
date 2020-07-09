@@ -104,4 +104,3 @@ if __name__ == "__main__":
     print("lv hour bugs")
     counter.run()
     print("#sublevel commits %s stable fixes" % args.rev)
-    
